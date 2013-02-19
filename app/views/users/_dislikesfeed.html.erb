@@ -22,6 +22,7 @@
               <li><%= link_to "Viral", signup_path, :class => "btn-customlike" %></li>
               <li><%= link_to "Lame", signup_path, :class => "btn-customdislike" %></li> 
               <% end %> 
+              <li><%= link_to "Show Post", content, :class => "btn-custom3" %></li>
               <li><%= link_to pluralize(content.comments.count, "Comment"), content, :class => "btn-custom3" %></li>
                 <% if signed_in? %>
               <li class="dropdown">
@@ -83,6 +84,7 @@
               <li><%= link_to "Viral", signup_path, :class => "btn-customlike" %></li>
               <li><%= link_to "Lame", signup_path, :class => "btn-customdislike" %></li> 
               <% end %>
+              <li><%= link_to "Show Post", content, :class => "btn-custom3" %></li>
               <li><%= link_to pluralize(content.comments.count, "Comment"), content, :class => "btn-custom3" %></li>
                 <% if signed_in? %>
               <li class="dropdown">

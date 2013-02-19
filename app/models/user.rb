@@ -62,7 +62,7 @@ class User < ActiveRecord::Base
       self[column] = SecureRandom.urlsafe_base64
     end while User.exists?(column => self[column])
   end
-
+  
   class << self
     def authenticate(username, submitted_password)
       user = find_by_username(username)
