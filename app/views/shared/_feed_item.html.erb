@@ -1,0 +1,53 @@
+<% if feed_item.content.blank? %>
+
+  <tr>
+    <td class="gravatar">
+    <%= link_to gravatar_for(feed_item.user), feed_item.user %>
+  </td>
+    <td class="micropost">
+    <span class="user">
+      <%= link_to feed_item.user.username, feed_item.user %>
+    </span>
+    <span class="content"><%= image_tag feed_item.image_url.to_s if feed_item.image? %></span>
+    <span class="timestamp">
+      Posted <%= time_ago_in_words(feed_item.created_at) %> ago.
+    </span>
+
+
+
+  </td>
+</tr>
+
+<% elsif feed_item.image.blank? %>
+
+<tr>
+  <td class="gravatar">
+    <%= link_to gravatar_for(feed_item.user), feed_item.user %>
+  </td>
+  <td class="micropost">
+    <span class="user">
+      <%= link_to feed_item.user.username, feed_item.user %>
+    </span>
+    <span class="content"><%= wrap(feed_item.content) %></span>
+    <span class="timestamp">
+      Posted <%= time_ago_in_words(feed_item.created_at) %> ago.
+    </span>
+
+     <ul class="nav nav-pills">
+      <li><%= link_to "Content Page", feed_item %></li>
+       <li><%= link_to pluralize(feed_item.comments.count, "Comment"), feed_item_comments_path(feed_item.id), :class => "ajax" %>
+<script>
+    jQuery('a.ajax').colorbox();
+</script></li>
+     <li><% user = feed_item.user rescue User.find(feed_item.user_id) %>
+      <% if current_user?(user) %>
+      <%= link_to "Delete", feed_item, :method => :delete,
+                                       :confirm => "Are you sure you want to delete this post?",
+                                       :title => feed_item.content %>
+      <% end %></li>
+</ul>
+
+  </td>
+  </tr>  
+
+<% end %>

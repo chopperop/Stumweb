@@ -1,0 +1,10 @@
+<% if is_mobile_view? %>
+<p style="font-size: 60%;">
+<% else %>
+<p style="margin-left: 60px; font-size: 40%">
+<% end %>
+
+<% @teams.each do |team| %>
+	<span style="color: firebrick;"><%= team.team_name %></span>: <%= team.team_score %> <br>
+<% end %>
+</p>

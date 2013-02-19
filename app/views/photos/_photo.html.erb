@@ -1,0 +1,102 @@
+<% @photos.each do |photo| %>
+
+<% if photo.content.blank? %>
+
+<tr>
+  <td class="micropost">
+    <span class="content"><%= image_tag photo.image_url.to_s if photo.image? %></span>
+    <span class="timestamp">
+      Posted <%= time_ago_in_words(photo.created_at) %> ago.
+    </span>
+
+<div class="accordion" id="accordion2">
+<div class="accordion-group">
+<div class="accordion-heading">
+<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+<%= pluralize(photo.comments.count, "Comment") %>
+</a>
+</div>
+<div id="collapseOne" class="accordion-body collapse in">
+<div class="accordion-inner">
+<% if photo.comments.any? %>
+        <table class="microposts" summary="User microposts">
+          comments <%#= render 'comments/commentshow' %>
+        </table>
+        <%#= will_paginate @comments %>
+      <% end %>
+</div>
+</div>
+</div>
+</div>
+
+<%# the nav-tabs border is commented out in line 3016 in the application.css file %>
+      <ul class="nav nav-tabs">
+      <li>
+       <div class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Reply</a>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+        <%= form_for [@photo, current_user.comments.new] do |f| %>
+      <%= render 'shared/error_messages', :object => f.object %>
+    <div class="field">
+    <%= f.text_area :body %>
+    </div>
+    <div class="actions">
+    <%= f.submit "Submit" %>
+    </div>
+    <% end %>
+    </ul>
+    </div>
+  </li>
+
+  <li>
+    <div class="nested_messages">
+    <div class="dropdown">
+      <% user = photo.user rescue User.find(photo.user_id) %>
+      <% if current_user?(user) %>
+      <%= link_to "Delete", photo, :method => :delete,
+                                       :confirm => "Are you sure you want to delete this image?",
+                                       :title => photo.content %>
+    
+  <% end %>
+</div>
+</div>
+</li>
+  </div>
+</ul>
+  </td>
+
+
+</tr>
+
+<% elsif photo.image.blank? %>
+
+<tr>
+  <td class="micropost">
+    <span class="content"><%= wrap(photo.content) %></span>
+    </br> 
+    </br>
+    <span class="timestamp">
+      Posted <%= time_ago_in_words(photo.created_at) %> ago.
+    </span>
+     <% user = photo.user rescue User.find(photo.user_id) %>
+      <% if current_user?(user) %>
+      <%= link_to "Delete", photo, :method => :delete,
+                                       :confirm => "Are you sure you want to delete this post?",
+                                       :title => photo.content %>
+      <% end %>
+
+</br>
+</br>
+
+<%= link_to pluralize(photo.comments.count, "Comment"), photo_comments_path(photo.id), :class => "ajax" %>
+<script>
+    jQuery('a.ajax').colorbox();
+</script>
+
+</br>
+
+</tr>
+
+<% end %>
+
+<% end %>

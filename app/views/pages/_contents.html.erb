@@ -1,0 +1,350 @@
+<% @everything.each do |content| %>
+
+<% if content.instance_of?(Content) %>
+
+  <% if (content.dislikes.count - content.likes.count) > 4 %>
+
+<% if is_mobile_view? %>
+<table class="microposts" summary="Status feed">
+<% else %> 
+<table class="microposts" summary="Status feed" style="width: 500px">
+<% end %>  
+<tr>
+  <td class="micropost">
+
+    <b style="color:darkblue;"><i>This content is hidden because too many people think it's lame.</i></b>
+
+  <br>  
+  <br>
+<% if is_mobile_view? %>
+    <span class="timestamp" style="width: 125%;">
+       Posted <%= time_ago_in_words(content.created_at) %> ago by <%= link_to content.user.username, content.user %> <br> <%= pluralize(content.likes.count, "Like") %> &#160; <%= pluralize(content.dislikes.count, "Dislike") %> &#160; <%= pluralize(content.impressionist_count, "Views") %>
+    </span>
+
+  <div class="bs-docs-example" style="font-size: 60%; width: 125%;">
+  <ul class="nav nav-pills">
+    <li><%= link_to "Show", content, :class => "btn-custom3" %></li>
+    <li><%= link_to pluralize(content.comments.count, "Comment"), content, :class => "btn-custom2" %></li>
+    <% if signed_in? %>
+    <li><% if current_user.admin? %>
+          <%= link_to "Admin Delete", content, :class => "btn-customdislike", :method => :delete, :confirm => "You sure?" %>
+        <% end %> </li>
+    <% end %>   
+  </ul>
+  </div>
+  <% else %>
+    <span class="timestamp">
+      <%= pluralize(content.likes.count, "Like") %> &#160; <%= pluralize(content.dislikes.count, "Dislike") %> &#160;&#160;&#160;&#160;&#160; Posted <%= time_ago_in_words(content.created_at) %> ago by <%= link_to content.user.username, content.user %> &#160;&#160;&#160;&#160;&#160; <%= pluralize(content.impressionist_count, "Views") %>
+    </span>
+
+  <div class="bs-docs-example">
+  <ul class="nav nav-pills">
+    <li><%= link_to pluralize(content.comments.count, "Comment"), content, :class => "btn-custom2" %></li>
+    <li><%= link_to "Show", content, :class => "btn-custom3" %></li>
+    <% if signed_in? %>
+    <li><% if current_user.admin? %>
+          <%= link_to "Admin Delete", content, :class => "btn-customdislike", :method => :delete, :confirm => "You sure?" %>
+        <% end %> </li>
+    <% end %>
+  </ul>
+  </div>
+  <% end %>
+
+    </td>
+</tr>
+
+</table>
+
+  <% else %>
+
+<% if is_mobile_view? %>
+<table class="microposts" summary="Status feed">
+<% else %> 
+  <table class="microposts" summary="Status feed" style="width: 500px">
+<% end %>    
+<tr>
+  <td class="micropost">
+    <span class="content"><b><%= raw(truncate(wrap(content.content.to_s), :length => 421, :separator => ' ', :omission => (link_to "... (more)", content))) %></b></span>
+    <br>
+    <br>
+    <% if is_mobile_view? %>
+    <span class="timestamp" style="width: 125%;">
+      Posted <%= time_ago_in_words(content.created_at) %> ago by <%= link_to content.user.username, content.user %> <br> <%= pluralize(content.likes.count, "Like") %> &#160; <%= pluralize(content.dislikes.count, "Dislike") %> &#160; <%= pluralize(content.impressionist_count, "Views") %>
+      &#160; 
+      <% user = content.user rescue User.find(content.user_id) %>
+          <% if current_user?(user) %>
+          <%= link_to "Delete", content, :class => "btn-customdislike", :method => :delete, 
+                                           :confirm => "Are you sure you want to delete this post?" %>
+          <% end %>
+      &#160; 
+      <% if signed_in? %>
+        <% if current_user.admin? %>
+          <%= link_to "Admin Delete", content, :class => "btn-customdislike", :method => :delete, :confirm => "You sure?" %>
+        <% end %> 
+      <% end %>
+    </span>
+    <% else %>
+    <span class="timestamp">
+      <%= pluralize(content.likes.count, "Like") %> &#160; <%= pluralize(content.dislikes.count, "Dislike") %> &#160;&#160;&#160;&#160;&#160; Posted <%= time_ago_in_words(content.created_at) %> ago by <%= link_to content.user.username, content.user %> &#160;&#160;&#160;&#160;&#160; <%= pluralize(content.impressionist_count, "Views") %>               
+    </span>
+    <% end %>
+
+    <% if is_mobile_view? %>
+        <div class="bs-docs-example" style="font-size: 60%; width: 125%;">
+            <ul class="nav nav-pills">
+              <% if signed_in? %>
+                <li><%= link_to "Viral", like_content_path(content), :class => "btn-customlike" %></li>
+                <li><%= link_to "Lame", dislike_content_path(content), :class => "btn-customdislike" %></li> 
+              <% else %>
+              <li><%= link_to "Viral", signup_path, :class => "btn-customlike" %></li>
+              <li><%= link_to "Lame", signup_path, :class => "btn-customdislike" %></li> 
+              <% end %>
+                <% if signed_in? %>
+              <li class="dropdown">
+                <a class="btn-custom3" class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">Reply</a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                  <%= form_for [content, current_user.comments.new] do |f| %>
+                    <%= render 'shared/error_messages', :object => f.object %>
+                      <div class="field">
+                      <%= f.text_area :body %>
+                      </div>
+                      <div class="actions">
+                      <%= f.submit "Submit", :class => "btn btn-success" %>
+                      </div>
+                    <% end %>
+                </ul>
+              </li>
+                <% else %>
+                  <li><%= link_to "Reply", signup_path, :class => "btn-custom3" %></li>
+                <% end %>
+                <li><%= link_to pluralize(content.comments.count, "Comment"), content, :class => "btn-custom3" %></li>
+              </ul> <!-- /tabs -->
+          </div>
+          <% else %>
+                  <div class="bs-docs-example">
+            <ul class="nav nav-pills">
+              <% if signed_in? %>
+                <li><%= link_to "Viral", like_content_path(content), :class => "btn-customlike" %></li>
+                <li><%= link_to "Lame", dislike_content_path(content), :class => "btn-customdislike" %></li> 
+              <% else %>
+              <li><%= link_to "Viral", signup_path, :class => "btn-customlike" %></li>
+              <li><%= link_to "Lame", signup_path, :class => "btn-customdislike" %></li> 
+              <% end %>
+              <li><%= link_to pluralize(content.comments.count, "Comment"), content, :class => "btn-custom3" %></li>
+                <% if signed_in? %>
+              <li class="dropdown">
+                <a class="btn-custom3" class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">Reply</a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                  <%= form_for [content, current_user.comments.new] do |f| %>
+                    <%= render 'shared/error_messages', :object => f.object %>
+                      <div class="field">
+                      <%= f.text_area :body %>
+                      </div>
+                      <div class="actions">
+                      <%= f.submit "Submit", :class => "btn btn-success" %>
+                      </div>
+                    <% end %>
+                </ul>
+              </li>
+                <% else %>
+                  <li><%= link_to "Reply", signup_path, :class => "btn-custom3" %></li>
+                <% end %>
+              <li><% user = content.user rescue User.find(content.user_id) %>
+                <% if current_user?(user) %>
+                <%= link_to "Delete", content, :class => "btn-customdislike", :method => :delete, 
+                                                 :confirm => "Are you sure you want to delete this post?" %>
+                <% end %></li>
+                <% if signed_in? %>
+               <li><% if current_user.admin? %>
+                     <%= link_to "Admin Delete", content, :class => "btn-customdislike", :method => :delete, :confirm => "You sure?" %>
+                    <% end %> </li>
+                    <% end %>
+              </ul> <!-- /tabs -->
+          </div>
+          <% end %> 
+ 
+</td>
+</tr>
+
+</table>
+
+<% end %>
+
+
+<% elsif content.instance_of?(Photo) %>
+
+
+  <% if (content.dislikes.count - content.likes.count) > 4 %>
+
+<table class="microposts" summary="Status feed">
+<tr>
+  <td class="micropost">
+
+    <b style="color:darkblue;"><i>This photo is hidden because too many people think it Lame.</i></b>
+
+  <br>
+  <br>
+
+  <% if is_mobile_view? %>
+    <span class="timestamp" style="width: 125%;">
+      Posted <%= time_ago_in_words(content.created_at) %> ago by <%= link_to content.user.username, content.user %> <br> <%= pluralize(content.likes.count, "Like") %> &#160; <%= pluralize(content.dislikes.count, "Dislike") %> &#160; <%= pluralize(content.impressionist_count, "Views") %>
+    </span>
+
+  <div class="bs-docs-example" style="font-size: 60%; width: 125%;">
+  <ul class="nav nav-pills">
+    <li><%= link_to "Show", content, :class => "btn-custom3" %></li>
+    <li><%= link_to pluralize(content.comments.count, "Comment"), content, :class => "btn-custom2" %></li>
+    <% if signed_in? %>
+    <li><% if current_user.admin? %>
+          <%= link_to "Admin Delete", content, :class => "btn-customdislike", :method => :delete, :confirm => "You sure?" %>
+        <% end %></li>
+    <% end %>
+  </ul>
+  </div>
+  <% else %>
+    <span class="timestamp">
+      <%= pluralize(content.likes.count, "Like") %> &#160; <%= pluralize(content.dislikes.count, "Dislike") %> &#160;&#160;&#160;&#160;&#160; Posted <%= time_ago_in_words(content.created_at) %> ago by <%= link_to content.user.username, content.user %> &#160;&#160;&#160;&#160;&#160; <%= pluralize(content.impressionist_count, "Views") %>
+    </span>
+
+  <div class="bs-docs-example">
+  <ul class="nav nav-pills">
+    <li><%= link_to pluralize(content.comments.count, "Comment"), content, :class => "btn-custom2" %></li>
+    <li><%= link_to "Show", content, :class => "btn-custom3" %></li>
+    <% if signed_in? %>
+    <li><% if current_user.admin? %>
+          <%= link_to "Admin Delete", content, :class => "btn-customdislike", :method => :delete, :confirm => "You sure?" %>
+        <% end %></li>
+    <% end %>
+  </ul>
+  </div>
+  <% end %>
+
+    </td>
+</tr>
+
+</table>
+
+  <% else %>
+
+  <table class="microposts" summary="Status feed">
+
+<tr>
+  <td class="micropost">
+    <% if content.captions.any? %>
+    <% content.captions.each do |caption| %>
+    <span class="content"><b><%= raw(truncate(wrap(caption.body), :length => 421, :separator => ' ', :omission => (link_to "... (more)", content))) %></b></span>
+    <% end %>
+    <br>
+    <br>
+    <% end %>
+    <span class="content"><%= cl_image_tag(content.image_url.to_s, :html_width => 500, :html_height => 150, :crop => :fill, :angle => :exif) if content.image? %></span>
+    <br>
+    <br>
+    <% if is_mobile_view? %>
+    <span class="timestamp" style="width: 125%;">
+      Posted <%= time_ago_in_words(content.created_at) %> ago by <%= link_to content.user.username, content.user %> <br> <%= pluralize(content.likes.count, "Like") %> &#160; <%= pluralize(content.dislikes.count, "Dislike") %> &#160; <%= pluralize(content.impressionist_count, "Views") %>
+      &#160; 
+      <% user = content.user rescue User.find(content.user_id) %>
+          <% if current_user?(user) %>
+          <%= link_to "Delete", content, :class => "btn-customdislike", :method => :delete, 
+                                           :confirm => "Are you sure you want to delete this post?" %>
+          <% end %>
+      &#160; 
+      <% if signed_in? %>
+        <% if current_user.admin? %>
+          <%= link_to "Admin Delete", content, :class => "btn-customdislike", :method => :delete, :confirm => "You sure?" %>
+        <% end %> 
+      <% end %> 
+    </span>
+    <% else %>
+    <span class="timestamp">
+      <%= pluralize(content.likes.count, "Like") %> &#160; <%= pluralize(content.dislikes.count, "Dislike") %> &#160;&#160;&#160;&#160;&#160; Posted <%= time_ago_in_words(content.created_at) %> ago by <%= link_to content.user.username, content.user %> &#160;&#160;&#160;&#160;&#160; <%= pluralize(content.impressionist_count, "Views") %>
+    </span>
+    <% end %>
+
+    <% if is_mobile_view? %>
+            <div class="bs-docs-example" style="font-size: 60%; width: 125%;">
+            <ul class="nav nav-pills">
+              <% if signed_in? %>
+                <li><%= link_to "Viral", like_photo_path(content), :class => "btn-customlike" %></li>
+                <li><%= link_to "Lame", dislike_photo_path(content), :class => "btn-customdislike" %></li> 
+                <% else %>
+              <li><%= link_to "Viral", signup_path, :class => "btn-customlike" %></li>
+              <li><%= link_to "Lame", signup_path, :class => "btn-customdislike" %></li> 
+              <% end %>
+                <% if signed_in? %>
+              <li class="dropdown">
+                <a class="btn-custom3" class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">Reply</a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                  <%= form_for [content, current_user.comments.new] do |f| %>
+                    <%= render 'shared/error_messages', :object => f.object %>
+                      <div class="field">
+                      <%= f.text_area :body %>
+                      </div>
+                      <div class="actions">
+                      <%= f.submit "Submit", :class => "btn btn-success" %>
+                      </div>
+                    <% end %>
+                </ul>
+              </li>
+                <% else %>
+                  <li><%= link_to "Reply", signup_path, :class => "btn-custom3" %></li>
+                <% end %>              
+              <li><%= link_to pluralize(content.comments.count, "Comment"), content, :class => "btn-custom3" %></li>
+            </ul> <!-- /tabs -->
+          </div>
+          <% else %> 
+          <div class="bs-docs-example">
+            <ul class="nav nav-pills">
+              <% if signed_in? %>
+                <li><%= link_to "Viral", like_photo_path(content), :class => "btn-customlike" %></li>
+                <li><%= link_to "Lame", dislike_photo_path(content), :class => "btn-customdislike" %></li> 
+                <% else %>
+              <li><%= link_to "Viral", signup_path, :class => "btn-customlike" %></li>
+              <li><%= link_to "Lame", signup_path, :class => "btn-customdislike" %></li> 
+              <% end %>
+              <li><%= link_to pluralize(content.comments.count, "Comment"), content, :class => "btn-custom3" %></li>
+                <% if signed_in? %>
+              <li class="dropdown">
+                <a class="btn-custom3" class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">Reply</a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                  <%= form_for [content, current_user.comments.new] do |f| %>
+                    <%= render 'shared/error_messages', :object => f.object %>
+                      <div class="field">
+                      <%= f.text_area :body %>
+                      </div>
+                      <div class="actions">
+                      <%= f.submit "Submit", :class => "btn btn-success" %>
+                      </div>
+                    <% end %>
+                </ul>
+              </li>
+                <% else %>
+                  <li><%= link_to "Reply", signup_path, :class => "btn-custom3" %></li>
+                <% end %>
+              <li><% user = content.user rescue User.find(content.user_id) %>
+                <% if current_user?(user) %>
+                <%= link_to "Delete", content, :class => "btn-customdislike", :method => :delete,
+                                                 :confirm => "Are you sure you want to delete this post?" %>
+                <% end %></li>
+                <% if signed_in? %>
+                <li><% if current_user.admin? %>
+                     <%= link_to "Admin Delete", content, :class => "btn-customdislike", :method => :delete, :confirm => "You sure?" %>
+                    <% end %> </li>
+                    <% end %>
+            </ul> <!-- /tabs -->
+          </div>
+          <% end %>
+
+
+</td>
+</tr>
+
+</table>
+
+ <% end %>
+
+<% end %>
+<% end %>
+
+

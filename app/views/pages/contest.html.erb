@@ -1,0 +1,37 @@
+<% if is_mobile_view? %>
+<h4 style="margin-left: 20px;"><span style="color:orangered; font-size: 150%;">Stumweb</span><span style="color:mediumblue;">: the front page of New York City!</span></h4>
+<% else %>
+<h3 style="margin-left: 25px;"><span class="textshadow1" style="color:orangered; font-size: 120%;">Stumweb</span><span class="textshadow2" style="color:mediumblue;">: the front page of New York City!</span></h3>
+<% end %>
+
+<% if is_mobile_view? %>
+<h4 class="textshadow1" style="color: firebrick; margin-left: 25px; font-size: 110%;">Three Highest Scoring Users Will Each Win an Amazon Kindle!</h4>
+<% else %>
+<h4 class="textshadow1" style="color: firebrick; margin-left: 25px; font-size: 160%;">Three Highest Scoring Users Will Each Win an Amazon Kindle!</h4>
+<% end %>
+
+<div style="margin-left: 25px;">
+<h5 style="color: mediumblue; font-size: 115%">Contest Instructions</h5>
+<span>1. <%= link_to "Sign up", signup_path %> as a new user. <b>Email is optional, but if you forget your password, your email is required to reset it.</b> You can always add your email later in your settings once signed in.</span>
+<br>
+<br>
+<span>2. Start posting breaking updates, photos, reviews, upcoming events, etc. about New York City and watch your score go up!</span>  
+
+<br>
+<br>
+
+<h5 style="color: mediumblue; font-size: 115%">Contest Rules</h5>
+<span>1. Contest starts at 12:00am on Monday, February 11th, 2013 and will end at 11:59pm on Friday, April 12th, 2013.</span>
+<br>
+<br>
+<span>2. The three highest scoring users will each win an <a href="http://www.amazon.com/Kindle-Ereader-ebook-reader/dp/B007HCCNJU">Amazon Kindle</a>.</span>
+<br>
+<br>
+<span>3. Each user's score is calculated by 1 point each for the difference in like counts minus dislike counts (viral button is the same as like and lame button is the same as dislike) plus 2 points each for each unique view on your post.</span>
+<br>
+<br>
+<span>4. An email is optional to sign up, but if you are one of the top three highest scoring users, <b>you will be required to add your email 48 hours after contest ends for Stumweb to contact you on how to receive your prize. If you have not added your email after 48 hours, the prize will be given to the next highest scoring user <u><i>with</i></u> an email.</b></span>
+<br>
+<br>
+<span>6. Do not post any graphic, nude, disturbing, or offensive content. Stumweb reserves the right to delete any post that violates this rule as well as any future rules that arise.</span> 
+</div>

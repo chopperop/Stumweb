@@ -1,0 +1,21 @@
+<table class="profile" summary="Profile information">
+  <tr>
+    <td class="main">
+      <h1>
+        <%= gravatar_for current_user %>
+        <%= current_user.username %> Inbox
+      </h1>
+        <% if @messages.any? %>
+        <table class="microposts" summary="User microposts">
+          <%= render 'messagesfeed' %>
+        </table>
+        <%= will_paginate @messages %>
+      <% end %>
+    </td>
+    <td class="sidebar round">
+      <strong>Username:</strong> <%= current_user.username %><br />
+      <strong>URL:</strong> <%= link_to user_path(current_user), current_user %><br />
+      <strong>Inbox Count:</strong> <%= current_user.received_messages.count %>
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,120 @@
+<% if is_mobile_view? %>
+
+<header style="margin: 0px; padding: 0px; width: 105%;">
+   <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <div class="nav-collapse collapse">
+            <% if signed_in? %>
+            <ul class="nav">
+              &#160; &#160; &#160; 
+              <%= link_to "Home", root_path, :style => "color:white" %> &#160; &#160;
+              <%= link_to "Profile", current_user, :style => "color:white" %> &#160; &#160;
+              <%= link_to "Sign out", signout_path, :style => "color:white" %> &#160; &#160;
+            <form class="navbar-search pull-right" method="get" action="http://www.picosearch.com/cgi-bin/ts.pl">
+              <input type="hidden" name="index" value="526045" />
+              &#160; &#160; <input type="text" name="query" class="search-query" style="width: 55%;" placeholder="Search">
+              <td><span style="white-space: nowrap;"><input type="submit" value="Go" name="search" /></span></td>
+            </form>
+            </ul>
+            <% else %>
+            <ul class="nav">
+              &#160; &#160; &#160; 
+              <%= link_to "Home", root_path, :style => "color:white" %> &#160; &#160;
+              <%= link_to "Sign up!", signup_path, :style => "color:white" %> &#160; &#160;
+              <%= link_to "Sign in", signin_path, :style => "color:white" %> &#160; &#160;
+            <form class="navbar-search pull-right" method="get" action="http://www.picosearch.com/cgi-bin/ts.pl">
+              <input type="hidden" name="index" value="526045" />
+              &#160; &#160; <input type="text" name="query" class="search-query" style="width: 50%;" placeholder="Search">
+              <td><span style="white-space: nowrap;"><input type="submit" value="Go" name="search" /></span></td>
+            </form>
+            </ul> 
+            <% end %>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+</header>
+
+<% else %>
+
+<header>
+   <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <%= link_to "Stumweb", root_path, :class => "brand" %>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><%= link_to "Home", root_path %></li>
+              <% if signed_in? %>
+              <li><%= link_to "Profile", current_user %></li>
+
+              <% end %>
+
+              <% if signed_in? %>
+              <li><%= link_to "Sign out", signout_path %></li>
+              <% end %>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">More<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><%= link_to "About", about_path %></li>
+                  <li><%= link_to "Contact", contact_path %></li>
+                  <li><%#= link_to "Help", help_path %></li>
+                  <% if signed_in? %>
+                  <li class="divider"></li>
+                  <li class="nav-header">Options</li>
+                  <li><%= link_to "Settings", edit_user_path(current_user) %></li>
+                  <% end %>
+                </ul>
+              </li>
+            </ul>
+            <ul class="nav">
+            <% if signed_in? %>
+            <form class="navbar-search pull-right" method="get" action="http://www.picosearch.com/cgi-bin/ts.pl">
+              <input type="hidden" name="index" value="526045" />
+              <input type="text" name="query" class="search-query" placeholder="Search">
+              <td><span style="white-space: nowrap;"><input type="submit" value="Go" name="search" /></span></td></tr>
+            </form>
+            <% end %>
+            <% if signed_out? %>
+            <li><%= link_to "Sign up!", signup_path %></li>
+             <ul class="nav pull-left">
+              <li class="dropdown">
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
+            <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
+            <%= form_for(:sessions, :url => sessions_path, :class => "navbar-form pull-left") do |f| %>
+              <li><%= f.text_field :username, :placeholder => "Username", :class => "span2"%></li>
+              <li><%= f.password_field :password, :placeholder => "Password", :class => "span2"%></li>
+              <li><%= f.submit "Sign in", :class => "btn btn-primary"%></li>
+              <br>
+              <li style="margin-left: -20px;"><%= link_to "Forgot password?", new_password_reset_path %></li>
+            <% end %>
+            </div>
+              </li>
+            </ul>
+            <% end %>
+            <% if signed_out? %>
+            <form class="navbar-search pull-right" method="get" action="http://www.picosearch.com/cgi-bin/ts.pl">
+              <input type="hidden" name="index" value="526045" />
+              <input type="text" name="query" class="search-query" placeholder="Search">
+              <td><span style="white-space: nowrap;"><input type="submit" value="Go" name="search" /></span></td></tr>
+            </form>
+            <% end %>
+            </ul> 
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+</header>
+
+<% end %>

@@ -1,0 +1,45 @@
+<div class="span2" style="position:fixed; left:0; width: 255px; padding-top: 10px;">
+  <div class="shadowborderleft">
+  	<div style="margin-left: 15px; margin-bottom: 1000px;">
+<% if signed_in? %>
+
+ 
+
+	<h3 class="title" style="color:mediumblue;">What's up?</h3>
+    <%= render 'shared/content_form' %>
+
+   	<h3 class="title" style="color:mediumblue;">Upload an Image</h3>
+    <%= render :file => '/photos/new' %>
+
+  
+
+<% else %>
+
+    <h1 class="title" style="color:mediumblue;">New user?</h1> 
+            <ul class="nav nav-pills" style="font-size: 85%;">
+              <li><%= link_to "Sign up now!", signup_path, :class => "btn-customsignup" %> </li>
+            </ul> <!-- /tabs -->
+          <%= link_to "(Email optional) It takes less than a minute. I promise.", signup_path, :class => "lead" %>
+      
+<br>
+<br>
+    <h1 class="title" style="color:mediumblue;">Already have an account?</h1> 
+    <ul class="nav nav-pills" style="font-size: 85%;">
+    	<li><%= link_to "Sign in now!", signin_path, :class => "btn-customsignup" %></li>
+      <br>
+      <br>
+      <li style="font-size: 150%; margin-left: -13px;"><%= link_to "Forgot password?", new_password_reset_path %></li>   
+    </ul>
+<% end %>
+</div>
+</div>
+</div>
+
+
+<div id="sidebar" class="span2" style="position:fixed; width:282px; right:0; padding-top: 10px;">
+	<div class="shadowborderright">
+	  <div style="margin-left: 15px; margin-bottom: 1000px; margin-top: 17px;">
+<%= render 'shared/rightside' %>
+		</div>
+	</div> 
+</div>

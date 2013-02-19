@@ -1,0 +1,49 @@
+  <table class="shadowborder">
+    <tr>
+      <td class="test">
+      <% if is_mobile_view? %>
+      <h3>
+        <span style="color:crimson"><%= @user.username %></span> <span style="color:mediumblue">Dislikes</span>
+      </h3>
+      <% else %>
+      <h3 style="margin-left: 15px;">
+        <span style="color:crimson"><%= @user.username %></span> <span style="color:mediumblue">Dislikes</span>
+      </h3>
+      <% end %>
+    <br>
+
+    <% if is_mobile_view? %>
+        <% if @dislikes.any? %>
+        <div>
+          <%= render 'dislikesfeed' %>
+        </div>
+        <%= will_paginate @dislikes, :page_links => false %>
+      <% end %>
+    <% else %>
+        <% if @dislikes.any? %>
+        <div id="pages" style="margin-left: 15px;">
+          <%= render 'dislikesfeed' %>
+        </div>
+        <%= will_paginate @dislikes, :page_links => false %>
+      <% end %>
+    <% end %>
+    </td>
+    
+<% if signed_in? %>
+    <% if is_mobile_view? %>
+    <% else %>
+    <td class="sidebar2 round">
+      <%= render 'shared/user_info' %>
+    </td>
+    <% end %>
+<% else %>
+    <% if is_mobile_view? %>
+    <% else %>
+    <td class="sidebar2 round">
+      <%= render 'shared/user_info_signedout' %>
+    </td>
+    <% end %>
+<% end %>
+
+  </tr>
+</table>

@@ -1,0 +1,17 @@
+<% if is_mobile_view? %>
+<h4 style="margin-left: 20px;"><span style="color:orangered">Stumweb</span><span style="color:mediumblue;">: the front page of New York City!</span></h4>
+<% else %>
+<h3 style="margin-left: 60px; width: 500px;"><span class="textshadow1" style="color:orangered; font-size: 120%;">Stumweb</span><span class="textshadow2" style="color:mediumblue; font-size: 95%;">: the front page of New York City!</span></h3>
+<% end %>
+<br>
+
+<h1 class="title" style="margin-left: 60px">Edit user</h1>
+
+<div style="margin-left: 60px">
+<%= simple_form_for(@user) do |f| %>
+  <%= f.input :email, label: 'Email (optional)' %>
+  <%= f.input :password, as: :password, label: 'Password' %>
+  <%= f.input :password_confirmation, as: :password, label: 'Password Confirmation' %>
+  <%= f.submit "Update", :class => 'btn btn-primary' %>
+<% end %>
+</div>

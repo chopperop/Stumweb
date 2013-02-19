@@ -1,0 +1,22 @@
+<tr>
+  <td class="gravatar">
+    <%= link_to gravatar_for(comment.user), comment.user %>
+  </td>
+  <td class="micropost">
+    <span class="user">
+      <%= link_to comment.user.username, comment.user %>
+    </span>
+    <span class="content"><%= wrap(comment.body) %></span>
+    <span class="timestamp">
+      Posted <%= time_ago_in_words(comment.created_at) %> ago.
+    </span>
+  </td>
+  <% if current_user?(comment.user) %>
+    <td>
+      <%= link_to "delete", photo_comment_path(comment.photo, comment), :method => :delete,
+                                       :confirm => "Are you sure you want to delete this comment?",
+                                       :title => comment.body %>
+    </td>
+  <% end %>
+
+  </tr>  

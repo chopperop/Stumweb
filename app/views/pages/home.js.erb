@@ -1,0 +1,7 @@
+$('#pages').append('<%= j render('contents') %>');
+<% if @everything.next_page %>
+  $('.pagination').replaceWith('<%= j will_paginate(@everything) %>');
+<% else %>
+  $('.pagination').remove();
+<% end %>
+<% sleep 1 %>

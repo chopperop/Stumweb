@@ -1,0 +1,7 @@
+$('#pages').append('<%= j render('likesfeed') %>');
+<% if @likes.next_page %>
+  $('.pagination').replaceWith('<%= j will_paginate(@likes) %>');
+<% else %>
+  $('.pagination').remove();
+<% end %>
+<% sleep 1 %>

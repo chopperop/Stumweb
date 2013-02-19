@@ -1,0 +1,14 @@
+<div class="span2" style="position:fixed; left:0">  
+<% if signed_in? %>
+	<h1 class="micropost">What's up?</h1>
+    <%= render 'shared/content_form' %>
+
+   	<h1 class="Photo">Upload a Photo</h1>
+    <%= render 'shared/content_image_form' %>
+<% end %>
+
+
+</div>
+<div class="span2" style="position:fixed; right:0">  
+CONTENT 
+</div>

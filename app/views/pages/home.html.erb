@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<% if signed_in? %>
+
+  <% if is_mobile_view? %>
+  <table class="profile" summary="For signed-in users">
+    <tr>
+      <td class="main">
+  <% else %>
+  <table class="shadowborder">
+    <tr>
+      <td class="test">
+  <% end %>
+
+        <% if is_mobile_view? %>
+        <h4><span style="color:orangered; font-size: 150%;">Stumweb</span><span style="color:mediumblue; font-size: 115%;">: the front page of New York City!</span></h4>
+
+        <br>
+
+        <h4 style="font-size: 105%; color: darkblue">Three highest scoring users will each win an <span style="color: firebrick">Amazon Kindle</span>! <%= link_to "Click here", contest_path %> for more details.</h4>
+        <% else %>
+        <h3 style="margin-left: 15px; width: 500px;"><span class="textshadow1" style="color:orangered; font-size: 120%;">Stumweb</span><span class="textshadow2" style="color:mediumblue; font-size: 95%;">: the front page of New York City!</span></h3>
+
+        <br>
+
+        <h4 style="margin-left: 15px; width: 500px; color: mediumblue">Three highest scoring users will each win an <span style="color: firebrick">Amazon Kindle</span>! <%= link_to "Click here", contest_path %> for more details.</h4>
+        <% end %>
+
+      <% if is_mobile_view? %>
+
+        
+        <div class="bs-docs-example" style="font-size: 60%; width: 125%;">
+            <ul class="nav nav-pills">
+              <li class="dropdown">
+                <a class="btn-custom3" class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">What's up NYC?</a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                  <%= simple_form_for(current_user.contents.build(params[:content])) do |f| %>
+                    <%= f.input :content, as: :text, label: false, :placeholder => 'Create a message'%>
+                    <%= f.submit "Submit Message", :class => 'btn btn-success' %>
+                  <% end %>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a class="btn-custom3" class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">Upload Image</a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                  <%= render :file => '/photos/new' %>
+                </ul>
+              </li>
+              </ul> <!-- /tabs -->
+          </div>
+
+
+    <% end %>
+
+    <% if is_mobile_view? %>
+    <div>
+    <strong class="teamtitlecolor">Top Three Users</strong>
+        <br>
+        <% @topthreeusers.each do |user| %>
+          <b><%= user.username %></b>: <%= user.score %>
+          <br>
+        <% end %>
+        <%#= link_to "All users", users_path %>
+        <br>
+        <%= link_to "Contest details", contest_path %>
+    </div>
+
+<br>
+        <div class="bs-docs-example" style="font-size: 60%; width: 125%;">
+            <ul class="nav nav-pills">
+              <li class="dropdown">
+                <a class="btn-custominfomobile" class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">My Info</a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                   <strong>Likes count:</strong> <% everything = current_user.contents + current_user.photos  %>
+                   <%= everything.inject(0) {|sum, f| sum + f.likes.count} %>
+                   <br>
+                   <strong>Dislikes count:</strong> <% everything = current_user.contents + current_user.photos  %>
+                   <%= everything.inject(0) {|sum, f| sum + f.dislikes.count} %>
+                   <br>
+                   <strong>View count:</strong> <% everything = current_user.contents + current_user.photos  %>
+                   <%= everything.inject(0) {|sum, f| sum + f.impressionist_count} %> 
+                   <br>
+                   <strong>Score:</strong> <%= current_user.score %>
+                </ul>
+              </li>
+              <% if has_team? %>
+              <li class="dropdown">
+                <a class="btn-custominfomobile" class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">Team Info</a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                  <strong>Team:</strong> <%= current_user.team.team_name %>
+                  <br>
+                  <strong>Team score:</strong> <%= current_user.team.team_score %>
+                  <br>
+                  <br>
+                  <% current_user.team.users.each do |mate| %>
+                    <span style="color: mediumblue;"><%= link_to mate.username, mate, style: "padding: none; margin: none" %></span> <br>
+                    <strong>Likes count:</strong> <% everything = mate.contents + mate.photos  %>
+                    <%= everything.inject(0) {|sum, f| sum + f.likes.count} %>
+                    <br>
+                    <strong>Dislikes count:</strong> <% everything = mate.contents + mate.photos  %>
+                    <%= everything.inject(0) {|sum, f| sum + f.dislikes.count} %>
+                    <br>
+                    <strong>View count:</strong> <% everything = mate.contents + mate.photos  %>
+                    <%= everything.inject(0) {|sum, f| sum + f.impressionist_count} %> 
+                    <br>
+                    <strong>Score:</strong> <%= mate.score %>
+                    <br>
+                    <br>
+                  <% end %>
+                </ul>
+              </li>
+              <% end %>
+              </ul> <!-- /tabs -->
+          </div>
+    <% end %>
+
+<% if is_mobile_view? %>
+<% else %>
+
+<% end %>
+
+<% if is_mobile_view? %>
+        <% if @everything.any? %>
+        <div>
+        <%= render 'contents' %>  
+        </div>
+  <%= will_paginate @everything, :page_links => false %>
+  <% end %>
+<% else %>
+        <% if @everything.any? %>
+        <div id="pages" style="margin-left: 15px;">
+        <%= render 'contents' %>  
+        </div>
+  <%= will_paginate @everything, :page_links => false %>
+  <% end %>
+<% end %>
+
+      </td>
+      <% if is_mobile_view? %>
+      <% else %>
+      <td class="sidebar2 round">
+        <%= render 'shared/user_info' %>
+      </td>
+      <% end %>
+    </tr>
+  </table>
+
+<% else %>
+
+  <% if is_mobile_view? %>
+  <table class="profile" summary="For signed-in users">
+    <tr>
+      <td class="main">
+  <% else %>
+  <table class="shadowborder">
+    <tr>
+      <td class="test">
+  <% end %>
+
+        <% if is_mobile_view? %>
+        <h4><span style="color:orangered; font-size: 150%;">Stumweb</span><span style="color:mediumblue; font-size: 115%;">: the front page of New York City!</span></h4>
+
+        <br>
+
+        <h4 style="font-size: 105%; color: darkblue">Three highest scoring users will each win an <span style="color: firebrick">Amazon Kindle</span>! <%= link_to "Click here", contest_path %> for more details.</h4>
+        <% else %>
+        <h3 style="margin-left: 15px; width: 500px;"><span class="textshadow1" style="color:orangered; font-size: 120%;">Stumweb</span><span class="textshadow2" style="color:mediumblue; font-size: 95%;">: the front page of New York City!</span></h3>
+
+        <br>
+        
+        <h4 style="margin-left: 15px; width: 500px; color: mediumblue">Join <span style="color:orangered">Stumweb</span> now and the three highest scoring users will each win an <span style="color: firebrick">Amazon Kindle</span>! <%= link_to "Click here", contest_path %> for more details.</h4>
+        <% end %>
+
+    <% if is_mobile_view? %>
+        <div class="bs-docs-example" style="font-size: 60%; width: 125%;">
+            <ul class="nav nav-pills">
+              <li><%= link_to "What's up NYC?", signup_path, :class => "btn-custom3" %></li>
+              <li><%= link_to "Upload Image", signup_path, :class => "btn-custom3" %></li>
+            </ul> <!-- /tabs -->
+        </div>
+    <% end %>
+
+    <% if is_mobile_view? %>
+    <div>
+    <strong class="teamtitlecolor">Top Three Users</strong>
+        <br>
+        <% @topthreeusers.each do |user| %>
+          <b><%= user.username %></b>: <%= user.score %>
+          <br>
+        <% end %>
+        <%= link_to "Contest details", contest_path %>
+    </div>
+    <% end %>
+
+<br>
+
+    <% if is_mobile_view? %>
+    <% else %>
+    
+    <% end %>
+
+<% if is_mobile_view? %>
+        <% if @everything.any? %>
+        <div>
+        <%= render 'contents' %>  
+        </div>
+  <%= will_paginate @everything, :page_links => false %>
+  <% end %>
+<% else %>
+        <% if @everything.any? %>
+        <div id="pages" style="margin-left: 15px;">
+        <%= render 'contents' %>  
+        </div>
+  <%= will_paginate @everything, :page_links => false %>
+  <% end %>
+<% end %>
+  </td>
+  
+  <% if is_mobile_view? %>
+  <% else %>
+      <td class="sidebar2 round">
+        <%= render 'shared/user_info_signedout' %>
+      </td>
+  <% end %>
+    </tr>
+</table>
+
+<% end %>

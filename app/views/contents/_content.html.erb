@@ -1,0 +1,73 @@
+<% @everything.sort_by(&:created_at).reverse.each do |content| %>
+
+<% if content.instance_of?(Content) %>
+
+<tr>
+  <td class="micropost">
+    <span class="content"><b><%= wrap(content.content.to_s) %></b></span>
+    </br> 
+    </br>
+    <span class="timestamp">
+      Posted <%= time_ago_in_words(content.created_at) %> ago by <%= link_to content.user.username, content.user %>
+    </span>
+
+    <ul class="nav nav-pills">
+      <li><%= link_to "Link to Page", content %></li>
+      <li><%= link_to pluralize(content.comments.count, "Comment"), content_comments_path(content.id), :class => "ajax" %>
+<script>
+    jQuery('a.ajax').colorbox();
+</script></li>
+<li><%= link_to "Reply", reply_content_comments_path(content.id), :class => "ajax" %>
+<script>
+    jQuery('a.ajax').colorbox();
+</script></li>
+     <li><% user = content.user rescue User.find(content.user_id) %>
+      <% if current_user?(user) %>
+      <%= link_to "Delete", content, :method => :delete,
+                                       :confirm => "Are you sure you want to delete this post?" %>
+      <% end %></li>
+</ul>
+ 
+</td>
+</tr>
+
+<% elsif content.instance_of?(Photo) %>
+
+<tr>
+  <td class="micropost">
+    <% if content.captions.any? %>
+    <% content.captions.each do |caption| %>
+    <span class="content"><b><%= wrap(caption.body) %></b></span>
+    <% end %>
+    </br>
+    </br>
+    <% end %>
+    <span class="content"><%= image_tag content.image_url.to_s if content.image? %></span>
+    </br> 
+    </br>
+    <span class="timestamp">
+      Posted <%= time_ago_in_words(content.created_at) %> ago by <%= link_to content.user.username, content.user %>
+    </span>
+
+    <ul class="nav nav-pills">
+      <li><%= link_to "Link to Page", content %></li>
+      <li><%= link_to pluralize(content.comments.count, "Comment"), content_comments_path(content.id), :class => "ajax" %>
+<script>
+    jQuery('a.ajax').colorbox();
+</script></li>
+<li><%= link_to "Reply", reply_content_comments_path(content.id), :class => "ajax" %>
+<script>
+    jQuery('a.ajax').colorbox();
+</script></li>
+     <li><% user = content.user rescue User.find(content.user_id) %>
+      <% if current_user?(user) %>
+      <%= link_to "Delete", content, :method => :delete,
+                                       :confirm => "Are you sure you want to delete this post?" %>
+      <% end %></li>
+</ul>
+
+</td>
+</tr>
+
+<% end %>
+<% end %>

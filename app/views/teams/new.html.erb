@@ -1,0 +1,35 @@
+<% if is_mobile_view? %>
+<h4><span style="color:orangered; font-size: 150%;">Stumweb</span><span style="color:mediumblue; font-size: 115%;">: the front page of New York City!</span></h4>
+<% else %>
+<h3 style="margin-left: 60px; width: 500px;"><span class="textshadow1" style="color:orangered; font-size: 120%;">Stumweb</span><span class="textshadow2" style="color:mediumblue; font-size: 95%;">: the front page of New York City!</span></h3>
+<% end %>
+
+<div style="margin-left: 60px">
+<%= error_messages_for :team, :header_tag => :h3 %>
+</div>
+
+<% if is_mobile_view? %>
+<% else %>
+<br>
+<% end %>
+
+<% if is_mobile_view? %>
+<h1 class="title">Create team</h1>
+<% else %>
+<h1 class="title" style="margin-left: 60px;">Create team</h1>
+<% end %>
+
+<% if is_mobile_view? %>
+<div>
+<% else %>
+<div style="margin-left: 60px">
+<% end %>
+<%= simple_form_for(@team) do |f| %>
+  <%= f.input :team_name, label: 'Team Name' %>
+  <%= f.input :user1, label: 'First Teammate (You)' %>
+  <%= f.input :user2, label: 'Second Teammate' %>
+  <%= f.input :user3, label: 'Third Teammate' %>
+  <%= f.input :email, label: 'Email Required for Contact if Team Wins' %>
+  <%= f.submit "Create team", :class => 'btn btn-primary' %>
+<% end %>
+</div>

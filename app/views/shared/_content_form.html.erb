@@ -1,0 +1,5 @@
+<%= simple_form_for(current_user.contents.build(params[:content])) do |f| %>
+	<%= f.input :content, as: :text, label: false, :placeholder => 'Create a message'%>
+	<%= f.submit "Submit Message", :class => 'btn btn-success' %>
+<% end %>
+

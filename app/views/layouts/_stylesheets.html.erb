@@ -1,0 +1,8 @@
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<%= stylesheet_link_tag    "bootstrap2.css", :media => "all" %>
+<%= stylesheet_link_tag    "custom.css", :media => "all" %>
+<% if is_mobile_view? %>
+<%= stylesheet_link_tag    "bootstrap-responsive.css", :media => "all" %>
+<% end %>

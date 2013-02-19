@@ -1,0 +1,10 @@
+<%= render 'showcontent' %>
+
+</br>
+
+<h1 class="title">Reply</h1>
+
+<%= simple_form_for [@content, current_user.comments.new] do |f| %>
+    <%= f.input :body, as: :text, :label => false, :placeholder => 'Create a reply message =P'%>
+    <%= f.submit "Submit Reply", :class => 'btn btn-primary' %>
+<% end %>

@@ -1,0 +1,73 @@
+<div class="user_info">
+    <span class="user_name">
+      <%= link_to current_user.username, current_user %>
+    </span>
+</br>
+</br>
+    <span class="microposts">
+      <strong class="teamtitlecolor">Top Three Users</strong>
+      <br>
+      <% @topthreeusers.each do |user| %>
+        <b><%= user.username %></b>: <%= user.score %>
+        <br>
+      <% end %>
+      <%= link_to "Contest details", contest_path, style: "font-size: 120%" %>
+      <%#= link_to "All users", users_path, style: "font-size: 120%" %>
+<br>
+
+    <h4><%= link_to "Likes", likes_user_path(current_user) %></h4>
+    <h4><%= link_to "Dislikes", dislikes_user_path(current_user) %></h4>
+    
+<br>
+
+   <% if has_team? %>
+   <strong class="teamtitlecolor">Team Info</strong>
+   <br>
+   <strong>Team:</strong> <%= current_user.team.team_name %>
+  <br>
+  <strong>Team score:</strong> <%= current_user.team.team_score %>
+  <br>
+  <br>
+              <ul class="nav nav-pills" style="margin-left: -13px;">
+              <li class="dropdown">
+   <a class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#"><strong class="teamtitlecolor">Teammates Info</strong></a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                  <div style="margin-left: 15px;">
+                  <% current_user.team.users.each do |mate| %>
+                    <span style="color: mediumblue;"><%= link_to mate.username, mate, style: "padding: none; margin: none" %></span> <br>
+                    <strong>Likes count:</strong> <% everything = mate.contents + mate.photos  %>
+                    <%= everything.inject(0) {|sum, f| sum + f.likes.count} %>
+                    <br>
+                    <strong>Dislikes count:</strong> <% everything = mate.contents + mate.photos  %>
+                    <%= everything.inject(0) {|sum, f| sum + f.dislikes.count} %>
+                    <br>
+                    <strong>View count:</strong> <% everything = mate.contents + mate.photos  %>
+                    <%= everything.inject(0) {|sum, f| sum + f.impressionist_count} %> 
+                    <br>
+                    <strong>Score:</strong> <%= mate.score %>
+                    <br>
+                    <br>
+                  <% end %>
+                </div>
+                </ul>
+              </li>
+            </ul>
+  <% end %>
+
+  <strong class="teamtitlecolor">My Info</strong>
+  <br>
+  <strong>Likes count:</strong> <% everything = current_user.contents + current_user.photos  %>
+   <%= everything.inject(0) {|sum, f| sum + f.likes.count} %>
+   <br>
+   <strong>Dislikes count:</strong> <% everything = current_user.contents + current_user.photos  %>
+   <%= everything.inject(0) {|sum, f| sum + f.dislikes.count} %>
+   <br>
+ 	 <strong>View count:</strong> <% everything = current_user.contents + current_user.photos  %>
+ 	 <%= everything.inject(0) {|sum, f| sum + f.impressionist_count} %> 
+   <br>
+   <strong>Score:</strong> <%= current_user.score %>
+
+    </span>
+
+</div>
+

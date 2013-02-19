@@ -1,0 +1,132 @@
+<% @comments.each do |comment| %>
+
+<% if (comment.dislikes.count - comment.likes.count) > 2 %>
+
+    <table class="microposts" summary="User microposts">
+
+<tr>
+  <td class="micropost">
+
+<% if is_mobile_view? %>
+<span class="content" style="width: 125%;"><% if comment.user == @photo.user %><b style="color:blue;"><i>This comment is hidden due to too many dislikes.</i></b> <% else %> <b style="color:darkblue;"><i>This comment is hidden due to too many dislikes.</i></b> <% end %></span>
+<br>
+<span class="timestamp" style="width: 130%;">
+ Posted <%= time_ago_in_words(comment.created_at) %> ago by <%= link_to comment.user.username, comment.user %> <br> <%= pluralize(comment.likes.count, "Like") %> &#160; <%= pluralize(comment.dislikes.count, "Dislike") %> 
+<br>
+<% else %>
+<span class="content"><% if comment.user == @photo.user %><b style="color:blue;"><i>This comment is hidden due to too many dislikes.</i></b> <% else %> <b style="color:darkblue;"><i>This comment is hidden due to too many dislikes.</i></b> <% end %></span>
+<br>
+<span class="timestamp">
+      <%= pluralize(comment.likes.count, "Like") %> &#160; <%= pluralize(comment.dislikes.count, "Dislike") %> &#160;&#160;&#160;&#160;&#160; Posted <%= time_ago_in_words(comment.created_at) %> ago by <%= link_to comment.user.username, comment.user %>
+<br>
+<% end %>
+
+  <div class="dropdown">
+    <a class="btn-custom3" class="dropdown-toggle" data-toggle="dropdown" href="#">Show</a>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+
+      <table class="microposts" summary="User microposts">
+
+<tr>
+  <td class="micropost">
+
+          <span class="content"><% if comment.user == @photo.user %><b style="color:firebrick;"><%= wrap(comment.body) %></b> <% else %> <b style="color:firebrick;"><%= wrap(comment.body) %></b><% end %></span>
+        </br>
+        </br>
+      <div class="bs-docs-example">
+      <ul class="nav nav-pills">
+    <% if signed_in? %>
+    <li><%= link_to "Like", like_comment_path(comment) %></li>
+    <li><%= link_to "Dislike", dislike_comment_path(comment) %></li>
+    <% else %>
+    <li><%= link_to "Like", signup_path %></li>
+    <li><%= link_to "Dislike", signup_path %></li>
+    <% end %>
+      <% if current_user?(comment.user) %>
+     <li><%= link_to "Delete", polymorphic_url([@photo, comment]), :class => "btn-customdislike", :method => :delete,
+                                       :confirm => "Are you sure you want to delete this comment?" %></li> 
+  <% end %>
+  <% if signed_in? %>
+    <% if current_user.admin? %>
+       <li><%= link_to "Admin Delete", polymorphic_url([@photo, comment]), :class => "btn-customdislike", :method => :delete, :confirm => "You sure?" %></li>
+      <% end %>
+      <% end %>
+    </ul>
+  </div>
+
+        </td>
+  </tr>
+
+</table>  
+
+</ul>
+</div>
+  </span>
+
+  </td>
+  </tr>
+
+</table>   
+
+    <% else %>
+
+<table class="microposts" summary="User microposts">
+
+<tr>
+  <td class="micropost">
+
+    <% if is_mobile_view?  %>
+    <span class="content" style="width: 125%;"><% if comment.user == @photo.user %><b style="color:blue;"><%= wrap(comment.body) %></b> <% else %> <b><%= wrap(comment.body) %></b><% end %></span>
+    <br> 
+    <span class="timestamp" style="width: 130%;">
+      Posted <%= time_ago_in_words(comment.created_at) %> ago by <%= link_to comment.user.username, comment.user %> <br> <%= pluralize(comment.likes.count, "Like") %> &#160; <%= pluralize(comment.dislikes.count, "Dislike") %>  
+    <br>
+    <% if signed_in? %>
+    &#160; <%= link_to "Like", like_comment_path(comment) %> &#160;&#160;
+    <%= link_to "Dislike", dislike_comment_path(comment) %> &#160;&#160;
+    <% else %>
+    &#160; <%= link_to "Like", signup_path %> &#160;&#160;
+    <%= link_to "Dislike", signup_path %> &#160;&#160;
+    <% end %>
+      <% if current_user?(comment.user) %>
+     <%= link_to "Delete", polymorphic_url([@photo, comment]), :class => "btn-customdislike", :method => :delete,
+                                       :confirm => "Are you sure you want to delete this comment?" %> 
+  <% end %> &#160;&#160;&#160;&#160;
+  <% if signed_in? %> 
+  <% if current_user.admin? %>
+       <%= link_to "Admin Delete", polymorphic_url([@photo, comment]), :class => "btn-customdislike", :method => :delete, :confirm => "You sure?" %>
+      <% end %>
+      <% end %>
+    <% else %>
+    <span class="content"><% if comment.user == @photo.user %><b style="color:blue;"><%= wrap(comment.body) %></b> <% else %> <b><%= wrap(comment.body) %></b><% end %></span>
+    <br> 
+    <span class="timestamp">
+      <%= pluralize(comment.likes.count, "Like") %> &#160; <%= pluralize(comment.dislikes.count, "Dislike") %> &#160;&#160;&#160;&#160;&#160; Posted <%= time_ago_in_words(comment.created_at) %> ago by <%= link_to comment.user.username, comment.user %> 
+    <br>
+    <% if signed_in? %>
+    &#160; <%= link_to "Like", like_comment_path(comment) %> &#160;&#160;
+    <%= link_to "Dislike", dislike_comment_path(comment) %> &#160;&#160;
+    <% else %>
+    &#160; <%= link_to "Like", signup_path %> &#160;&#160;
+    <%= link_to "Dislike", signup_path %> &#160;&#160;
+    <% end %>
+      <% if current_user?(comment.user) %>
+     <%= link_to "Delete", polymorphic_url([@photo, comment]), :class => "btn-customdislike", :method => :delete,
+                                       :confirm => "Are you sure you want to delete this comment?" %> 
+  <% end %> &#160;&#160;&#160;&#160;
+  <% if signed_in? %> 
+  <% if current_user.admin? %>
+       <%= link_to "Admin Delete", polymorphic_url([@photo, comment]), :class => "btn-customdislike", :method => :delete, :confirm => "You sure?" %>
+      <% end %>
+      <% end %>
+    </span>
+    <% end %>
+    </td>
+
+  </tr> 
+
+  </table> 
+
+<% end %>
+
+<% end %>

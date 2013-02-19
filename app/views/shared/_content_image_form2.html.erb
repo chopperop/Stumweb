@@ -1,0 +1,19 @@
+<%= form_for(current_user.contents.build(params[:content]), :html => {:multipart => true}) do |f| %>
+  <%= render 'shared/error_messages', :object => f.object %>
+  <div class="field">
+	<%= f.file_field :image %>
+  </div>
+  <div class="field">
+  	<%= f.label :remote_image_url, "or image URL" %>
+    <%= f.text_field :remote_image_url %>
+  </div> 
+  <div class="field">
+    <%= f.fields_for :captions do |b| %>
+     <%= b.label :body, "Enter caption" %>
+     <%= f.text_field :body %>
+    <% end %>
+  </div> 
+  <div class="actions">
+    <%= f.submit "Submit" %>
+  </div>
+<% end %>

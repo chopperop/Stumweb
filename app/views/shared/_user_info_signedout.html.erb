@@ -1,0 +1,13 @@
+<div class="user_info">
+	<span class="microposts">
+	      <strong class="teamtitlecolor">Top Three Users</strong>
+	      <br>
+	      <% @topthreeusers.each do |user| %>
+	        <b><%= user.username %></b>: <%= user.score %>
+	        <br>
+	      <% end %>
+	      <%= link_to "Contest details", contest_path, style: "font-size: 120%" %>
+	      <%#= link_to "All users", users_path, style: "font-size: 120%" %>
+	</span>
+
+</div>

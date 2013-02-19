@@ -1,0 +1,30 @@
+<% if is_mobile_view? %>
+<h4><span style="color:orangered; font-size: 150%;">Stumweb</span><span style="color:mediumblue;">: the front page of New York City!</span></h4>
+<% else %>
+<h3 style="margin-left: 60px;"><span class="textshadow1" style="color:orangered">Stumweb</span><span class="textshadow2" style="color:mediumblue;">: the front page of New York City!</span></h3>
+<% end %>
+
+<br>
+
+<% if is_mobile_view? %>
+<h1 class="title"> All teams<h1>
+<% else %>
+<h1 class="title" style="margin-left: 75px;"> All teams<h1>
+<% end %>
+
+    <% if is_mobile_view? %>
+        <% if @teams.any? %>
+        <div>
+          <%= render 'teamsfeed' %>
+        </div>
+        <%= will_paginate @teams %>
+      <% end %>
+    <% else %>
+        <% if @teams.any? %>
+        <div id="pages" style="margin-left: 15px;">
+          <%= render 'teamsfeed' %>
+        </div>
+        <%= will_paginate @teams %>
+      <% end %>
+    <% end %>
+   

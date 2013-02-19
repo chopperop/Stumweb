@@ -1,0 +1,59 @@
+  <% if is_mobile_view? %>
+  <table class="profile" summary="For signed-in users">
+    <tr>
+      <td class="main">
+  <% else %>
+  <table class="shadowborder">
+    <tr>
+      <td class="test">
+  <% end %>
+
+        <% if is_mobile_view? %>
+        <h4><span style="color:orangered; font-size: 150%;">Stumweb</span><span style="color:mediumblue; font-size: 115%;">: the front page of New York City!</span></h4>
+        <% else %>
+        <h3 style="margin-left: 15px; width: 500px;"><span class="textshadow1" style="color:orangered; font-size: 120%;">Stumweb</span><span class="textshadow2" style="color:mediumblue; font-size: 95%;">: the front page of New York City!</span></h3>
+        <% end %>
+        
+<% if is_mobile_view? %>
+<% else %>
+<br>
+<% end %>
+
+<% if is_mobile_view? %>
+<h1 class="title">Sign up now in less than a minute!</h1>
+<% else %>
+<h1 class="title" style="margin-left: 15px">Sign up now in less than a minute!</h1>
+<% end %>
+
+<% if is_mobile_view? %>
+<div>
+<% else %>
+<div style="margin-left: 15px">
+<% end %>
+<%= simple_form_for(@user) do |f| %>
+  <%= f.input :username, label: 'Username' %>
+  <%= f.input :email, label: 'Email <span style="font-size: 82%;">(optional, but required if you need to reset password. you can also add this later under settings.)</span>' %>
+  <%= f.input :password, as: :password, label: 'Password' %>
+  <%= f.input :password_confirmation, as: :password, label: 'Password Confirmation' %>
+  <%= f.submit "Sign up", :class => 'btn btn-primary' %>
+<% end %>
+</div>
+
+<% if is_mobile_view? %>
+<p style="font-size: 110%;">Already have an account? <%= link_to "Sign in now!", signin_path %> </p>
+<% else %>
+<p style="font-size: 175%; margin-left: 15px;">Already have an account? <%= link_to "Sign in now!", signin_path %> </p>
+<% end %>
+
+</td>
+<% if is_mobile_view? %>
+      <% else %>
+
+
+      <td class="sidebar2 round">
+        <%= render 'shared/user_info_signedout' %>
+      </td>
+
+  <% end %>
+</tr>
+</table>

@@ -1,0 +1,10 @@
+<%= simple_form_for(setup_content(current_user.contents.build(params[:content]))) do |f| %>
+  <%= f.input :image, :as => :file, label: false %>
+</br>
+  <%#= f.input :remote_image_url, label: "or enter image URL", placeholder: 'Enter URL' %>
+  <%= f.simple_fields_for :captions do |b| %>
+  	<%= b.input :body, :as => :text %>
+  <% end %>
+  <%= f.submit "Submit Image", :class => 'btn btn-primary' %>
+<% end %>
+

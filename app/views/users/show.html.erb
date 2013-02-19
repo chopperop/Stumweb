@@ -1,0 +1,56 @@
+<% if is_mobile_view? %>
+  <table class="profile" summary="For signed-in users">
+    <tr>
+      <td class="main">
+  <% else %>
+  <table class="shadowborder">
+    <tr>
+      <td class="test">
+  <% end %>
+  
+        <% if is_mobile_view? %>
+      <h3>
+        <span style="color:crimson"><%= @user.username %></span> <span style="color:mediumblue">Contents</span>
+      </h3>
+        <% else %>
+      <h3 style="margin-left: 15px;">
+        <span style="color:crimson"><%= @user.username %></span> <span style="color:mediumblue">Contents</span>
+      </h3>
+        <% end %>
+    </br>
+
+    <% if is_mobile_view? %>
+        <% if @everything.any? %>
+        <div>
+          <%= render 'userfeed' %>
+      </div>
+        <%= will_paginate @everything, :page_links => false %>
+      <% end %>
+    <% else %>
+        <% if @everything.any? %>
+        <div id="pages" style="margin-left: 15px;">
+          <%= render 'userfeed' %>
+      </div>
+        <%= will_paginate @everything, :page_links => false %>
+      <% end %>
+    <% end %>
+    </td>
+
+<% if signed_in? %>
+    <% if is_mobile_view? %>
+    <% else %>
+    <td class="sidebar2 round">
+      <%= render 'shared/user_info' %>
+    </td>
+    <% end %>
+<% else %>
+    <% if is_mobile_view? %>
+    <% else %>
+    <td class="sidebar2 round">
+      <%= render 'shared/user_info_signedout' %>
+    </td>
+    <% end %>
+<% end %>
+
+  </tr>
+</table>

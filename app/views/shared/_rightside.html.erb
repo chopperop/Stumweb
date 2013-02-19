@@ -1,0 +1,70 @@
+<h4 style="color:mediumblue;">Browse Past Stories</h4>
+
+<% @allcontents.each do |content| %>
+
+<% if content.instance_of?(Content) %>
+
+  <% if (content.dislikes.count - content.likes.count) < 5 %>
+
+<div class="sideborder">
+<tr>
+  <td class="micropost">
+    <span class="content"><b><%= raw(truncate(wrap(content.content.to_s), :length => 100, :separator => ' ', :omission => (link_to "... (more)", content))) %></b></span>
+    <br> 
+    <span class="timestamp" style="font-size: 85%;">
+      Posted <%= time_ago_in_words(content.created_at) %> ago by <%= link_to content.user.username, content.user %> 
+    </span>
+  <br>
+
+            <div class="bs-docs-example">
+            <ul class="nav nav-pills" style="font-size: 85%;">
+              <li><%= link_to pluralize(content.likes.count, "Like"), content, :class => "btn-customlike2" %></li>
+              <li><%= link_to pluralize(content.dislikes.count, "Dislike"), content, :class => "btn-customdislike2" %></li> 
+              <li><%= link_to pluralize(content.comments.count, "Comment"), content, :class => "btn-custom2" %></li>
+            </ul> <!-- /tabs -->
+          </div> 
+ 
+</td>
+</tr>
+</div>
+
+  <% end %>
+
+<% elsif content.instance_of?(Photo) %>
+
+  <% if (content.dislikes.count - content.likes.count) < 5 %>
+
+<div class="sideborder2">
+<tr>
+  <td class="micropost">
+    <% if content.captions.any? %>
+    <% content.captions.each do |caption| %>
+    <span class="content"><b><%= raw(truncate(wrap(caption.body), :length => 100, :separator => ' ', :omission => (link_to "... (more)", content))) %></b></span>
+    <% end %>
+    <br>
+    <% end %>
+    <span class="content" style="font-size: 85%;"><%= cl_image_tag(content.image_url.to_s, :html_width => 100, :html_height => 150, :crop => :fill, :angle => :exif) if content.image? %></span>
+    <br> 
+    <span class="timestamp" style="font-size: 85%;">
+      Posted <%= time_ago_in_words(content.created_at) %> ago by <%= link_to content.user.username, content.user %>
+    </span>
+    <br>
+
+            <div class="bs-docs-example">
+            <ul class="nav nav-pills" style="font-size: 85%;">
+              <li><%= link_to pluralize(content.likes.count, "Like"), content, :class => "btn-customlike2" %></li>
+              <li><%= link_to pluralize(content.dislikes.count, "Dislike"), content, :class => "btn-customdislike2" %></li> 
+              <li><%= link_to pluralize(content.comments.count, "Comment"), content, :class => "btn-custom2" %></li>
+          </div> 
+
+
+</td>
+</tr>
+</div>
+
+  <% end %>
+
+<% end %>
+<% end %>
+
+

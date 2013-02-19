@@ -1,0 +1,37 @@
+        <% if is_mobile_view? %>
+        <h4><span style="color:orangered; font-size: 150%;">Stumweb</span><span style="color:mediumblue; font-size: 115%;">: the front page of New York City!</span></h4>
+        <% else %>
+        <h3 style="margin-left: 60px; width: 500px;"><span class="textshadow1" style="color:orangered; font-size: 120%;">Stumweb</span><span class="textshadow2" style="color:mediumblue; font-size: 95%;">: the front page of New York City!</span></h3>
+        <% end %>
+        
+<% if is_mobile_view? %>
+<% else %>
+<br>
+<% end %>
+
+<% if is_mobile_view? %>
+<h1 class="title">Sign in</h1>
+<% else %>
+<h1 class="title" style="margin-left: 60px;">Sign in</h1>
+<% end %>
+
+<% if is_mobile_view? %>
+<div>
+<% else %>
+<div style="margin-left: 60px">
+<% end %>
+<%= simple_form_for(:sessions, :url => sessions_path) do |f| %>
+  <%= f.input :username, label: 'Username' %>
+  <%= f.input :password, as: :password, label: 'Password' %>
+  <%= f.submit "Sign in", :class => 'btn btn-primary' %>
+  <br>
+  <br>
+  <p><%= link_to "Forgot password?", new_password_reset_path %></p>
+<% end %>
+</div>
+
+<% if is_mobile_view? %>
+<p style="font-size: 110%;">New user? <%= link_to "Sign up now! It takes less than a minute. I promise.", signup_path %></p>
+<% else %>
+<p style="font-size: 150%; margin-left: 60px;">New user? <%= link_to "Sign up now! It takes less than a minute. I promise.", signup_path %></p>
+<% end %>

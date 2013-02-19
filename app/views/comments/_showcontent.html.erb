@@ -1,0 +1,43 @@
+<tr>
+  <td class="main">
+  <table class="microposts" summary="Status feed">
+
+<% if @content.instance_of?(Content) %>
+        
+<tr>
+    <td class="gravatar">
+    <%= link_to gravatar_for(@content.user), @content.user %>
+  </td>
+  <td class="micropost">
+    <span class="content"><b><%= wrap(@content.content) %></b></span>
+    </br> 
+    </br>
+    <span class="timestamp">
+      Posted <%= time_ago_in_words(@content.created_at) %> ago by <%= link_to @content.user.username, @content.user %>
+    </span>
+</td>
+</tr>
+
+<% elsif @content.instance_of?(Photo) %>
+
+<tr>
+    <td class="gravatar">
+    <%= link_to gravatar_for(@content.user), @content.user %>
+  </td>
+  <td class="micropost">
+    <span class="content"><b><%= image_tag @content.image_url.to_s if @content.image? %></b></span>
+    </br> 
+    </br>
+    <span class="timestamp">
+      Posted <%= time_ago_in_words(@content.created_at) %> ago by <%= link_to @content.user.username, @content.user %>
+    </span>
+</td>
+</tr>
+
+<% end %>
+
+  </table>
+  <%#= will_paginate @contents %>
+   </td>
+    </tr>
+
