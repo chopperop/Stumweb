@@ -39,4 +39,9 @@ class PagesController < ApplicationController
   def contest
     @title = "Contest Instructions and Rules"
   end
+
+  def bestfeatures
+    @title = "Best features"
+    render :layout => "application2"
+  end
 end

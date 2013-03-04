@@ -1,0 +1,380 @@
+<% if is_mobile_view? %>
+<h4 class="textshadow1" style="color: firebrick; font-size: 110%;">Best Features</h4>
+<% else %>
+<h4 class="textshadow1" style="color: firebrick; font-size: 160%;">Best features</h4>
+<% end %>
+
+<br>
+
+In creating Stumweb.com, part of it was to see how far I can go and another part was to boost my resume. I will list the best features of my web app and explain the code behind them. Please share this page in case anyone you know is looking to hire an intern/junior Ruby on Rails developer that lives in New York City. I can be contacted at <a href="mailto:david.wu712@gmail.com">david.wu712@gmail.com</a>. Thank you!
+
+<br>
+<br>
+
+Stumweb is written in ruby and uses Ruby on Rails, Twitter Bootstrap, Carrierwave plus MiniMagick, Amazon S3, Sendgrid using RoR ActionMailer, and hosted on Heroku.
+
+<br>
+<br>
+
+<b>- The homepage news feed</b>
+
+<br>
+<br>
+
+I have a pages controller with a home action that is the root_path to my app. In my home action, I have the following code:
+
+<br>
+<br>
+
+@contents = Content.all
+<br> 
+@photos = Photo.all
+<br>
+@everything = (@contents + @photos).sort_by(&:content_changed_at).reverse.paginate(page: params[:page], :per_page => 5)
+
+<br>
+<br>
+
+@contents and @photos relates to my Content and Photo models. I have a Comment model that when a content or photo gets commented on, it brings that content or photo to the top of the page. This is shown in @everything. In both my Content and Photo models, I have a :content_changed_at column which is a datetime. This column is the same as self.created_at when the object gets created and when a user comments on the content or photo, :content_changed_at will equal to the comment created_at time. I then sort @everything by this column and reverse it so @everything will have a descending order.
+
+<br>
+<br>
+
+In my Content and Photo model, I have a before_create :init_sort_column callback and the code for :init_sort_column is:
+
+<br>
+<br>
+
+def init_sort_column
+<br>
+    <span style="margin-left: 10px;">self.content_changed_at = self.created_at || Time.now</span>
+<br>
+end
+
+<br>
+<br>
+
+Then in my Comment model, I have an after_create :update_parent_sort_column callback and the code for :update_parent_sort_column is
+
+<br>
+<br>
+
+def update_parent_sort_column
+<br>
+    <span style="margin-left: 10px;">if self.commentable</span>
+<br>
+      <span style="margin-left: 20px;">self.commentable.content_changed_at = self.created_at</span>
+<br>
+      <span style="margin-left: 20px;">self.commentable.save</span>
+<br>
+    <span style="margin-left: 10px;">end</span>
+<br>    
+end
+
+<br>
+<br>
+
+I have a polymorphic association between Content/Photo and Comment models and that is what self.commentable is.
+
+<br>
+<br>
+
+In my view, the gist of my code is:
+
+<br>
+<br>
+
+<%% @everything.each do |content| %>
+<br>
+<span style="margin-left: 10px;"><%% if content.instance_of?(Content) %></span>
+<br>
+  <span style="margin-left: 20px;"><%% if (content.dislikes.count - content.likes.count) > 4 %></span>
+<br>
+	<span style="margin-left: 30px;">“This content is hidden because too many people think it's lame.”</span>
+<br>
+  <span style="margin-left: 20px;"><%% else %></span>
+<br>
+	<span style="margin-left: 30px;">Code for content model.</span>
+<br>
+  <span style="margin-left: 20px;"><%% end %></span>
+<br>
+	<span style="margin-left: 10px;"><%% elsif content.instance_of?(Photo) %></span>
+<br>
+  <span style="margin-left: 20px;"><%% if (content.dislikes.count - content.likes.count) > 4 %></span>
+<br>
+	<span style="margin-left: 30px;">“This photo is hidden because too many people think it's lame.”</span>
+<br>
+  <span style="margin-left: 20px;"><%% else %></span>
+<br>
+	<span style="margin-left: 30px;">Code for photo model.</span>
+<br>
+  <span style="margin-left: 20px;"><%% end %></span>
+<br>
+	<span style="margin-left: 10px;"><%% end %></span>
+<br>
+<%% end %>
+
+<br>
+<br>
+
+If the content/photo’s dislikes minus likes count is five or greater, I put the string “This content/photo is hidden because too many people think it's lame.”. This is to let users regulate my site to hide posts that they don’t like.
+
+<br>
+<br>          
+
+I coupled this with <a href="http://railscasts.com/episodes/114-endless-page-revised">Railscasts episode 114</a> on endless pagination to create a seemingly endless scroll feature. 
+
+<br>
+<br>
+
+<b>- The side navigations with browse past stories</b>
+
+<br>
+<br>
+
+Using twitter bootstrap, here’s the css to fix the left and right side navigations to the page.
+
+<br>
+
+<xmp>
+<div class="span2" style="position:fixed; left:0; width: 255px; padding-top: 10px;">
+Basically the same code as the homepage, but I only show a content or photo if the dislikes minus likes count is 4 or less.
+<%% if (content.dislikes.count - content.likes.count) < 5 %>
+  Code for content/photo.
+<%% end %>
+</div>
+
+<div class="span2" style="position:fixed; width:282px; right:0; padding-top: 10px;">
+  Code for left side.
+</div>
+</xmp>
+
+<br>
+
+The span2 class refers to twitter bootstrap.
+
+<br>
+<br> 
+
+For the browse past stories on the right side, I put a before_filter :load_side in my application controller and the code to :load_side is:
+
+<br>
+<br>
+
+def load_side
+<br>
+    <span style="margin-left: 10px;">@user = current_user</span>
+    <br>
+    <span style="margin-left: 10px;">@contents = Content.all </span>
+    <br>
+    <span style="margin-left: 10px;">@photos = Photo.all</span>
+    <br>
+    <span style="margin-left: 10px;">@allcontents = (@contents + @photos).shuffle.last(2)</span>
+    <br>
+end
+
+<br>
+<br>
+
+<b>- User’s score and contest</b>
+
+<br>
+<br>
+
+I added a :score column into the User model. The score for a user is calculated by 1 point each for the difference in all your posts’ likes count minus dislikes count plus 2 points each for each unique view on your post. 
+
+<br>
+<br>
+
+In my Content and Photo models, I have an after_update :update_user_score and after_destroy :update_user_score callbacks where the code for :update_user_score is:
+
+<br>
+<br>
+
+def update_user_score
+<br>
+    <span style="margin-left: 10px;">if self.user</span>
+    <br>
+      <span style="margin-left: 20px;">user = self.user</span>
+      <br>
+      <span style="margin-left: 20px;">everything = user.contents + user.photos</span>
+      <br>
+      <span style="margin-left: 20px;">likes_count = everything.inject(0) {|sum, f| sum + f.likes.count}</span>
+      <br>
+      <span style="margin-left: 20px;">dislikes_count = everything.inject(0) {|sum, f| sum + f.dislikes.count}</span>
+      <br>
+      <span style="margin-left: 20px;">unique_views = everything.inject(0) {|sum, f| sum + f.impressionist_count}</span>
+      <br>
+      <span style="margin-left: 20px;">score = ((2 * unique_views) + (likes_count - dislikes_count))</span>
+      <br>
+      <span style="margin-left: 20px;">user.update_column(:score, score)</span>
+      <br>
+     <span style="margin-left: 10px;">end</span>
+     <br>
+ end
+
+ <br>
+ <br>
+
+I use the inject method on everything (user.contents + user.photos) to find the sum of all your contents and photos likes count, dislikes count, and unique views. Then I use these values to get the score and update the :score column of the user with the update_column method. To get unique views, I used the impressionist gem.
+
+<br>
+<br>
+
+I put a before_filter :top_three_users in my application controller and the code for :top_three_users is:
+
+<br>
+<br>
+
+def top_three_users
+<br>
+    <span style="margin-left: 10px;">@topthreeusers = User.all.sort_by(&:score).reverse.first(3)</span>
+<br>
+end
+
+<br>
+<br>
+
+I basically sort by the :score column, reverse it, and choose the first 3 to get the top three users.
+
+<br>
+<br>
+
+In my view I put the following code to display the top three users:
+
+<br>
+<br>
+
+<%% @topthreeusers.each do |user| %>
+<br>
+        <span style="margin-left: 10px;"><b><%%= user.username %></b>: <%%= user.score %></span>
+        <br>
+        <span style="margin-left: 10px;">br</span>
+<br>
+<%% end %>
+
+<br>
+<br>
+
+<b>- Uploading photos along with a caption</b>
+
+<br>
+<br>
+
+This feature took me a while to figure out. I first followed <a href="http://railscasts.com/episodes/253-carrierwave-file-uploads">Railscasts Ep. 253 CarrierWave File Uploads</a> to set up an Image Uploader to my Photo model. I use Amazon S3 to store the photos. In my image_uploader.rb file, I switched the storage to :fog and created a carrierwave.rb file in config/initializers folder. Put your Amazon S3 credentials there to allow Amazon to store your photos.
+
+<br>
+<br>
+
+Another tricky part with allowing users to upload photos is that photos taken on mobile cameras can be sideways when you take the photo with your camera sideways. You can see them vertically on your camera because each photo has an exif data that can tell a whole bunch of details of your photo like the location, angle, type of camera, etc. and your camera will automatically format the photo by the angle in the exif data. 
+
+<br>
+<br>
+
+To rotate these photos that were taken horizontally when uploading them to Amazon S3, I use MiniMagick by including this line of code in my image_uploader.rb file: 
+
+<br>
+<br>
+
+include CarrierWave::MiniMagick
+<br>
+<br>
+
+I also included the gem ‘mini_magick’ in my gemfile and bundle installed it.
+
+<br>
+<br>
+
+Then in my image_uploader.rb file, I included the following code:
+
+<br>
+<br>
+
+process :rotate
+
+<br>
+<br>
+
+def rotate
+<br>
+    <span style="margin-left: 10px;">manipulate! do |image|</span>
+    <br>
+      <span style="margin-left: 20px;">image.auto_orient</span>
+      <br>
+      <span style="margin-left: 20px;">image</span>
+      <br>
+    <span style="margin-left: 10px;">end</span>
+    <br>
+end
+
+<br>
+<br>
+
+MiniMagick has a method called auto_orient which will rotate your photo if it was taken sideways by reading the exif data.
+
+<br>
+<br>
+
+I also have a feature to create a caption with the photo when it is created. My Photo model has_many :captions and my Caption model belongs_to :photo. The problem to solve was trying to create two models at once in one form. 
+
+<br>
+<br>
+
+The solution I used was in my view for the new action for my Photo model was:
+
+<br>
+<br>
+
+<%%= simple_form_for(setup_content(current_user.photos.build(params[:photo]))) do |f| %>
+<br>
+  <span style="margin-left: 10px;"><%%= f.input :image_cache, :as => :hidden, label: false %></span>
+  <br>
+  <span style="margin-left: 10px;"><%%= f.input :image, :as => :file, label: false %></span>
+  <br>
+  <span style="margin-left: 10px;"><%%= f.input :remote_image_url, label: "or enter image URL", placeholder: 'Enter URL' %></span>
+  <br>
+  <span style="margin-left: 10px;"><%%= f.simple_fields_for :captions do |b| %></span>
+  <br>
+  	<span style="margin-left: 20px;"><%%= b.input :body, :as => :text, label: 'Write a caption', placeholder: 'Enter a caption' %></span>
+  <br>
+  <span style="margin-left: 10px;"><%% end %></span>
+  <br>
+  <span style="margin-left: 10px;"><%%= f.submit "Submit Image", :class => 'btn btn-success' %></span>
+  <br>
+<%% end %>
+
+<br>
+<br>
+
+Note: I use simple_form_for instead of the regular form_for. You can use this by using the <a href="https://github.com/plataformatec/simple_form">simple_form gem</a>.
+
+<br>
+<br>
+
+I created a setup_content helper method in my helper file:
+
+<br>
+<br>
+
+def setup_content(content)
+<br>
+     <span style="margin-left: 10px;">content.captions.build </span>
+     <br>
+     <span style="margin-left: 10px;">content</span>  
+     <br>
+end 
+
+<br>
+<br>
+
+This sets up the caption field once in the view.
+
+<br>
+<br>
+
+In my simple_form_for I needed to use simple_fields_for :captions to create a caption along with creating the photo.
+
+<br>
+<br>
+
+If any of you got any questions or want to know the code behind some feature I didn’t explain here, don’t hesitate to contact me at <a href="mailto:david.wu712@gmail.com">david.wu712@gmail.com</a>!

@@ -70,6 +70,7 @@ end
   match '/about', :to => 'pages#about'
   match '/help', :to => 'pages#help'
   match '/contest', :to => 'pages#contest'
+  match '/bestfeatures', :to => 'pages#bestfeatures'
   match '/index', :to => 'users#index'
   match '/signup', :to => 'users#new'
   match '/signin', :to => 'sessions#new'
