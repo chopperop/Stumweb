@@ -315,7 +315,7 @@ MiniMagick has a method called auto_orient which will rotate your photo if it wa
 <br>
 <br>
 
-I also have a feature to create a caption with the photo when it is created. My Photo model has_many :captions and my Caption model belongs_to :photo. The problem to solve was trying to create two models at once in one form. 
+I also have a feature to create a caption with the photo when it is created. My Photo model has_many :captions along with an accepts_nested_attributes_for :captions and my Caption model belongs_to :photo. The problem to solve was trying to create two models at once in one form. 
 
 <br>
 <br>
