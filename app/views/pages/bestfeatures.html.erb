@@ -24,15 +24,13 @@ Stumweb is written in ruby and uses Ruby on Rails, Twitter Bootstrap, Carrierwav
 I have a pages controller with a home action that is the root_path to my app. In my home action, I have the following code:
 
 <br>
-<br>
 
+<xmp>
 @contents = Content.all
-<br> 
 @photos = Photo.all
-<br>
-@everything = (@contents + @photos).sort_by(&:content_changed_at).reverse.paginate(page: params[:page], :per_page => 5)
+@everything = (@contents + @photos).sort_by(&:content_changed_at).reverse.paginate(page: params[:page], :per_page => 5) 
+</xmp>
 
-<br>
 <br>
 
 @contents and @photos relates to my Content and Photo models. I have a Comment model that when a content or photo gets commented on, it brings that content or photo to the top of the page. This is shown in @everything. In both my Content and Photo models, I have a :content_changed_at column which is a datetime. This column is the same as self.created_at when the object gets created and when a user comments on the content or photo, :content_changed_at will equal to the comment created_at time. I then sort @everything by this column and reverse it so @everything will have a descending order.
@@ -43,35 +41,28 @@ I have a pages controller with a home action that is the root_path to my app. In
 In my Content and Photo model, I have a before_create :init_sort_column callback and the code for :init_sort_column is:
 
 <br>
-<br>
 
+<xmp>
 def init_sort_column
-<br>
-    <span style="margin-left: 10px;">self.content_changed_at = self.created_at || Time.now</span>
-<br>
-end
+  self.content_changed_at = self.created_at || Time.now
+end 
+</xmp>
 
-<br>
 <br>
 
 Then in my Comment model, I have an after_create :update_parent_sort_column callback and the code for :update_parent_sort_column is
 
 <br>
-<br>
 
+<xmp>
 def update_parent_sort_column
-<br>
-    <span style="margin-left: 10px;">if self.commentable</span>
-<br>
-      <span style="margin-left: 20px;">self.commentable.content_changed_at = self.created_at</span>
-<br>
-      <span style="margin-left: 20px;">self.commentable.save</span>
-<br>
-    <span style="margin-left: 10px;">end</span>
-<br>    
-end
+  if self.commentable
+    self.commentable.content_changed_at = self.created_at
+    self.commentable.save
+  end
+end 
+</xmp>
 
-<br>
 <br>
 
 I have a polymorphic association between Content/Photo and Comment models and that is what self.commentable is.
@@ -82,39 +73,25 @@ I have a polymorphic association between Content/Photo and Comment models and th
 In my view, the gist of my code is:
 
 <br>
-<br>
 
+<xmp>
 <%% @everything.each do |content| %>
-<br>
-<span style="margin-left: 10px;"><%% if content.instance_of?(Content) %></span>
-<br>
-  <span style="margin-left: 20px;"><%% if (content.dislikes.count - content.likes.count) > 4 %></span>
-<br>
-	<span style="margin-left: 30px;">“This content is hidden because too many people think it's lame.”</span>
-<br>
-  <span style="margin-left: 20px;"><%% else %></span>
-<br>
-	<span style="margin-left: 30px;">Code for content model.</span>
-<br>
-  <span style="margin-left: 20px;"><%% end %></span>
-<br>
-	<span style="margin-left: 10px;"><%% elsif content.instance_of?(Photo) %></span>
-<br>
-  <span style="margin-left: 20px;"><%% if (content.dislikes.count - content.likes.count) > 4 %></span>
-<br>
-	<span style="margin-left: 30px;">“This photo is hidden because too many people think it's lame.”</span>
-<br>
-  <span style="margin-left: 20px;"><%% else %></span>
-<br>
-	<span style="margin-left: 30px;">Code for photo model.</span>
-<br>
-  <span style="margin-left: 20px;"><%% end %></span>
-<br>
-	<span style="margin-left: 10px;"><%% end %></span>
-<br>
+  <%% if content.instance_of?(Content) %>
+    <%% if (content.dislikes.count - content.likes.count) > 4 %>
+      “This content is hidden because too many people think it's lame.”
+    <%% else %>
+      Code for content model.
+    <%% end %>
+  <%% elsif content.instance_of?(Photo) %>
+    <%% if (content.dislikes.count - content.likes.count) > 4 %>
+      “This photo is hidden because too many people think it's lame.”
+    <%% else %>
+    Code for photo model.
+    <%% end %>
+  <%% end %>
 <%% end %>
+</xmp> 
 
-<br>
 <br>
 
 If the content/photo’s dislikes minus likes count is five or greater, I put the string “This content/photo is hidden because too many people think it's lame.”. This is to let users regulate my site to hide posts that they don’t like.
@@ -159,21 +136,16 @@ The span2 class refers to twitter bootstrap.
 For the browse past stories on the right side, I put a before_filter :load_side in my application controller and the code to :load_side is:
 
 <br>
-<br>
 
+<xmp>
 def load_side
-<br>
-    <span style="margin-left: 10px;">@user = current_user</span>
-    <br>
-    <span style="margin-left: 10px;">@contents = Content.all </span>
-    <br>
-    <span style="margin-left: 10px;">@photos = Photo.all</span>
-    <br>
-    <span style="margin-left: 10px;">@allcontents = (@contents + @photos).shuffle.last(2)</span>
-    <br>
-end
+  @user = current_user
+  @contents = Content.all
+  @photos = Photo.all
+  @allcontents = (@contents + @photos).shuffle.last(2)
+end 
+</xmp>
 
-<br>
 <br>
 
 <b>- User’s score and contest</b>
@@ -189,32 +161,22 @@ I added a :score column into the User model. The score for a user is calculated 
 In my Content and Photo models, I have an after_update :update_user_score and after_destroy :update_user_score callbacks where the code for :update_user_score is:
 
 <br>
-<br>
 
+<xmp>
 def update_user_score
-<br>
-    <span style="margin-left: 10px;">if self.user</span>
-    <br>
-      <span style="margin-left: 20px;">user = self.user</span>
-      <br>
-      <span style="margin-left: 20px;">everything = user.contents + user.photos</span>
-      <br>
-      <span style="margin-left: 20px;">likes_count = everything.inject(0) {|sum, f| sum + f.likes.count}</span>
-      <br>
-      <span style="margin-left: 20px;">dislikes_count = everything.inject(0) {|sum, f| sum + f.dislikes.count}</span>
-      <br>
-      <span style="margin-left: 20px;">unique_views = everything.inject(0) {|sum, f| sum + f.impressionist_count}</span>
-      <br>
-      <span style="margin-left: 20px;">score = ((2 * unique_views) + (likes_count - dislikes_count))</span>
-      <br>
-      <span style="margin-left: 20px;">user.update_column(:score, score)</span>
-      <br>
-     <span style="margin-left: 10px;">end</span>
-     <br>
- end
+  if self.user
+    user = self.user
+    everything = user.contents + user.photos
+    likes_count = everything.inject(0) {|sum, f| sum + f.likes.count}
+    dislikes_count = everything.inject(0) {|sum, f| sum + f.dislikes.count}
+    unique_views = everything.inject(0) {|sum, f| sum + f.impressionist_count}
+    score = ((2 * unique_views) + (likes_count - dislikes_count))
+    user.update_column(:score, score)
+  end
+end 
+</xmp>
 
- <br>
- <br>
+<br>
 
 I use the inject method on everything (user.contents + user.photos) to find the sum of all your contents and photos likes count, dislikes count, and unique views. Then I use these values to get the score and update the :score column of the user with the update_column method. To get unique views, I used the impressionist gem.
 
@@ -224,15 +186,13 @@ I use the inject method on everything (user.contents + user.photos) to find the 
 I put a before_filter :top_three_users in my application controller and the code for :top_three_users is:
 
 <br>
-<br>
 
+<xmp>
 def top_three_users
-<br>
-    <span style="margin-left: 10px;">@topthreeusers = User.all.sort_by(&:score).reverse.first(3)</span>
-<br>
-end
+  @topthreeusers = User.all.sort_by(&:score).reverse.first(3)
+end 
+</xmp>
 
-<br>
 <br>
 
 I basically sort by the :score column, reverse it, and choose the first 3 to get the top three users.
@@ -243,17 +203,14 @@ I basically sort by the :score column, reverse it, and choose the first 3 to get
 In my view I put the following code to display the top three users:
 
 <br>
-<br>
 
+<xmp>
 <%% @topthreeusers.each do |user| %>
-<br>
-        <span style="margin-left: 10px;"><b><%%= user.username %></b>: <%%= user.score %></span>
-        <br>
-        <span style="margin-left: 10px;">br</span>
-<br>
+  <b><%%= user.username %></b>: <%%= user.score %></span>
+  <br>
 <%% end %>
+</xmp>
 
-<br>
 <br>
 
 <b>- Uploading photos along with a caption</b>
@@ -293,21 +250,16 @@ Then in my image_uploader.rb file, I included the following code:
 process :rotate
 
 <br>
-<br>
 
+<xmp>
 def rotate
-<br>
-    <span style="margin-left: 10px;">manipulate! do |image|</span>
-    <br>
-      <span style="margin-left: 20px;">image.auto_orient</span>
-      <br>
-      <span style="margin-left: 20px;">image</span>
-      <br>
-    <span style="margin-left: 10px;">end</span>
-    <br>
-end
+  manipulate! do |image|
+    image.auto_orient
+    image
+  end
+end 
+</xmp>
 
-<br>
 <br>
 
 MiniMagick has a method called auto_orient which will rotate your photo if it was taken sideways by reading the exif data.
@@ -323,27 +275,19 @@ I also have a feature to create a caption with the photo when it is created. My 
 The solution I used was in my view for the new action for my Photo model was:
 
 <br>
-<br>
 
+<xmp>
 <%%= simple_form_for(setup_content(current_user.photos.build(params[:photo]))) do |f| %>
-<br>
-  <span style="margin-left: 10px;"><%%= f.input :image_cache, :as => :hidden, label: false %></span>
-  <br>
-  <span style="margin-left: 10px;"><%%= f.input :image, :as => :file, label: false %></span>
-  <br>
-  <span style="margin-left: 10px;"><%%= f.input :remote_image_url, label: "or enter image URL", placeholder: 'Enter URL' %></span>
-  <br>
-  <span style="margin-left: 10px;"><%%= f.simple_fields_for :captions do |b| %></span>
-  <br>
-  	<span style="margin-left: 20px;"><%%= b.input :body, :as => :text, label: 'Write a caption', placeholder: 'Enter a caption' %></span>
-  <br>
-  <span style="margin-left: 10px;"><%% end %></span>
-  <br>
-  <span style="margin-left: 10px;"><%%= f.submit "Submit Image", :class => 'btn btn-success' %></span>
-  <br>
-<%% end %>
+  <%%= f.input :image_cache, :as => :hidden, label: false %>
+  <%%= f.input :image, :as => :file, label: false %>
+  <%%= f.input :remote_image_url, label: "or enter image URL", placeholder: 'Enter URL' %>
+  <%%= f.simple_fields_for :captions do |b| %>
+    <%%= b.input :body, :as => :text, label: 'Write a caption', placeholder: 'Enter a caption' %>
+  <%% end %>
+  <%%= f.submit "Submit Image", :class => 'btn btn-success' %>
+<%% end %> 
+</xmp>
 
-<br>
 <br>
 
 Note: I use simple_form_for instead of the regular form_for. You can use this by using the <a href="https://github.com/plataformatec/simple_form">simple_form gem</a>.
@@ -354,17 +298,14 @@ Note: I use simple_form_for instead of the regular form_for. You can use this by
 I created a setup_content helper method in my helper file:
 
 <br>
-<br>
 
+<xmp>
 def setup_content(content)
-<br>
-     <span style="margin-left: 10px;">content.captions.build </span>
-     <br>
-     <span style="margin-left: 10px;">content</span>  
-     <br>
+  content.captions.build
+  content
 end 
+</xmp>
 
-<br>
 <br>
 
 This sets up the caption field once in the view.
