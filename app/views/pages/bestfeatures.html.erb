@@ -178,7 +178,7 @@ end
 
 <br>
 
-I use the inject method on everything (user.contents + user.photos) to find the sum of all your contents and photos likes count, dislikes count, and unique views. Then I use these values to get the score and update the :score column of the user with the update_column method. To get unique views, I used the impressionist gem.
+I use the inject method on everything (user.contents + user.photos) to find the sum of all your contents and photos likes count, dislikes count, and unique views. Then I use these values to get the score and update the :score column of the user with the update_column method. To get unique views, I used the <a herf="https://github.com/charlotte-ruby/impressionist">impressionist gem</a>.
 
 <br>
 <br>
@@ -231,10 +231,9 @@ Another tricky part with allowing users to upload photos is that photos taken on
 To rotate these photos that were taken horizontally when uploading them to Amazon S3, I use MiniMagick by including this line of code in my image_uploader.rb file: 
 
 <br>
-<br>
 
-include CarrierWave::MiniMagick
-<br>
+<xmp>include CarrierWave::MiniMagick</xmp>
+
 <br>
 
 I also included the gem ‘mini_magick’ in my gemfile and bundle installed it.
@@ -245,13 +244,10 @@ I also included the gem ‘mini_magick’ in my gemfile and bundle installed it.
 Then in my image_uploader.rb file, I included the following code:
 
 <br>
-<br>
-
-process :rotate
-
-<br>
 
 <xmp>
+process :rotate
+
 def rotate
   manipulate! do |image|
     image.auto_orient
